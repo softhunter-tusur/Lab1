@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Метатеги для установки кодировки символов и настройки масштабирования -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Заголовок страницы -->
+    <title>Обработка изображения</title>
+    <!-- CSS стили для стилизации страницы -->
+    <style>
+        /* Стили для элементов страницы */
+        body {
+            text-align: center; /* Центрирование содержимого страницы */
+        }
+
+        form {
+            display: inline-block;
+            text-align: left;
+            margin-top: 50px; /* Отступ от верхнего края */
+        }
+
+        #preview {
+            max-width: 100%;
+            max-height: 400px; /* Максимальная высота изображения */
+            margin: 20px auto; /* Центрирование изображения */
+            display: block;
+        }
+
+        .hidden {
+            display: none; /* Скрыть элемент */
+        }
+
+        input[type=file] {
+            display: none; /* Скрыть элемент */
+        }
+
+        .btn-browse {
+            display: inline-block;
+            background-color: #CCCCCC;
+            color: #000;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: lowercase;
+            box-shadow: 0 4px #999; /* Тень вниз на 4 пикселя */
+        }
+    </style>
+</head>
+<body>
+    <!-- Заголовок страницы -->
+    <h1>Добавление рамки и построение графика распределения цветов</h1>
+    <!-- Форма для загрузки изображения -->
+    <form id="upload-form" method="POST" enctype="multipart/form-data" action="" onsubmit="return validateForm()">
+        <!-- CSRF токен для защиты формы от атак межсайтовой подделки запросов (CSRF) -->
+        {{ form.csrf_token }}
+        <!-- Поле для загрузки изображения -->
+        <div>
+            {{ form.image.label }}
+            <!-- Кнопка для выбора файла изображения -->
+            <label class="btn-browse">
+                обзор
+                {{ form.image(id="image-upload") }}
+            </label>
+            <!-- Превью загруженного изображения -->
+            <img id="preview" src="#" alt=""> <!-- Убираем атрибут alt -->
+            <!-- Отображение ошибок загрузки изображения, если они есть -->
+            {% if form.image.errors %}
+                <ul>
+                {% for error in form.image.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <!-- Поле для ввода размера рамки (скрыто, показывается после выбора изображения) -->
+        <div id="border-size" class="hidden">
+            {{ form.border_size.label }}
+            {{ form.border_size(size=4) }}
+        </div>
+        <!-- Капча (скрыта, показывается после выбора изображения) -->
+        <div id="captcha" class="hidden">
+            {{ form.recaptcha }}
+        </div>
+        <!-- Кнопка отправки формы (скрыта, показывается после выбора изображения) -->
+        <div id="submit-button" class="hidden">
+            {{ form.submit }}
+        </div>
+    </form>
+    <!-- JavaScript скрипты -->
+    <script>
+        // Функция для проверки расширения загружаемого файла
+        function validateForm() {
+            var fileInput = document.getElementById('image-upload'); // Получаем элемент по уникальному id
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+            if (!allowedExtensions.exec(filePath)) {
+                // Выводим сообщение об ошибке, если выбран недопустимый файл
+                alert('Пожалуйста, загрузите файл изображения с расширением .jpg, .jpeg, .png или .gif');
+                fileInput.value = ''; // Очищаем поле выбора файла
+                return false; // Отменяем отправку формы
+            }
+            return true; // Разрешаем отправку формы, если файл соответствует допустимым расширениям
+        }
+
+        // Функция для предварительного просмотра загружаемого изображения
+        function previewImage(event) {
+            var reader = new FileReader(); // Создаем объект FileReader
+            reader.onload = function() {
+                var preview = document.getElementById('preview'); // Получаем элемент по уникальному id
+                preview.src = reader.result; // Устанавливаем изображение в атрибут src
+                document.getElementById('border-size').classList.remove('hidden'); // Показать поле ввода размера рамки
+                document.getElementById('captcha').classList.remove('hidden'); // Показать капчу
+                document.getElementById('submit-button').classList.remove('hidden'); // Показать кнопку отправки
+            }
+            reader.readAsDataURL(event.target.files[0]); // Читаем файл как URL
+        }
+
+        // Добавляем обработчик события изменения файла в поле ввода
+        var fileInput = document.getElementById('image-upload'); // Получаем элемент по уникальному id
+        fileInput.addEventListener('change', previewImage); // Добавляем функцию previewImage как обработчик события change
+    </script>
+</body>
+</html>
