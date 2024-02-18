@@ -1,17 +1,13 @@
 import sys
 import os
 
-# Добавляем путь к корневой папке проекта в PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from app import app  # Импортируем экземпляр приложения Flask
 import unittest  # Импортируем модуль для создания тестовых кейсов
+from app import app  # Импортируем экземпляр приложения Flask
 
 
-class TestExample(unittest.TestCase):
-    """
-    Класс для тестирования.
-    """
+class TestExample(unittest.TestCase):  # Создаем класс для тестирования
 
     def setUp(self):
         """
@@ -34,7 +30,8 @@ class TestExample(unittest.TestCase):
         """
         response = self.app.get('/')  # Получаем ответ от главной страницы
         self.assertEqual(response.status_code, 200)  # Проверяем, что ответ успешен (код 200)
-        self.assertIn(b'Upload Image', response.data)  # Проверяем наличие элемента "Upload Image" в ответе
+        self.assertIn('Upload Image',
+                      response.data.decode('utf-8'))  # Проверяем наличие элемента "Upload Image" в ответе
 
     def test_upload_image(self):
         """
@@ -49,8 +46,10 @@ class TestExample(unittest.TestCase):
             # Отправляем POST-запрос на главную страницу с данными
             response = self.app.post('/', data=data, content_type='multipart/form-data')
             self.assertEqual(response.status_code, 200)  # Проверяем, что ответ успешен (код 200)
-            self.assertIn(b'Bordered Image', response.data)  # Проверяем наличие "Bordered Image" в ответе
-            self.assertIn(b'Color Distribution', response.data)  # Проверяем наличие "Color Distribution" в ответе
+            self.assertIn('Bordered Image',
+                          response.data.decode('utf-8'))  # Проверяем наличие "Bordered Image" в ответе
+            self.assertIn('Color Distribution',
+                          response.data.decode('utf-8'))  # Проверяем наличие "Color Distribution" в ответе
 
 
 if __name__ == '__main__':
