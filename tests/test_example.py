@@ -1,11 +1,9 @@
-# tests/test_example.py
-
-import unittest  # Импортируем модуль для создания тестовых кейсов
-from app import app  # Импортируем экземпляр приложения Flask
 import sys
-
-# Добавляем путь к основному приложению в PYTHONPATH
 sys.path.append('/home/softhunter/PycharmProjects/Lab1/')
+
+from app import app  # Импортируем экземпляр приложения Flask
+import unittest  # Импортируем модуль для создания тестовых кейсов
+
 
 class TestExample(unittest.TestCase):  # Создаем класс для тестирования
 
