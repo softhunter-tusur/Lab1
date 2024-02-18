@@ -23,5 +23,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Add project root to PYTHONPATH
+      run: |
+        export PYTHONPATH="${PYTHONPATH}:/home/runner/work/Lab1/Lab1"
+        echo "PYTHONPATH=${PYTHONPATH}" >> $GITHUB_ENV
+
     - name: Run tests
       run: pytest
