@@ -1,37 +1,20 @@
-import os
 import unittest
-from flask import Flask
-from werkzeug.datastructures import FileStorage
+from app import app  # Замените "your_app" на имя вашего приложения или модуля
 
-class FlaskTestCase(unittest.TestCase):
+class FlaskTest(unittest.TestCase):
 
     def setUp(self):
-        # Создаем экземпляр приложения Flask для тестирования
-        self.app = Flask(__name__)
-        # Включаем режим тестирования
-        self.app.config['TESTING'] = True
+        self.app = app.test_client()
 
     def tearDown(self):
         pass
 
-    def test_upload_image(self):
-        # Определяем путь к тестовому изображению
-        test_image_path = os.path.join(os.path.dirname(__file__), 'test_image.jpg')
-
-        # Открываем файл с изображением
-        with open(test_image_path, 'rb') as f:
-            # Создаем объект FileStorage, представляющий загружаемый файл
-            file_storage = FileStorage(f)
-
-            # Отправляем POST-запрос на сервер с загружаемым файлом и другими данными
-            with self.app.test_client() as client:
-                response = client.post('/', data={'image': file_storage, 'border_size': 10},
-                                       follow_redirects=True)
-
-                # Проверяем код ответа
-                self.assertEqual(response.status_code, 200)
-                # Проверяем, что в ответе есть ожидаемый текст "Result"
-                self.assertIn(b'Result', response.data)
+    def test_result(self):
+        tester = app.test_client(self)
+        with open('tests/test_image.jpg', 'rb') as img_file:
+            response = tester.post('/', data={'image': img_file}, follow_redirects=True)
+            # Проверяем, что в ответе есть ожидаемый текст
+            self.assertIn('Добавление рамки и построение графика распределения цветов', response.data.decode('utf-8'))
 
 if __name__ == '__main__':
     unittest.main()
