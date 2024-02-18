@@ -1,11 +1,17 @@
 import sys
-sys.path.append('/home/softhunter/PycharmProjects/Lab1/')
+import os
+
+# Добавляем путь к корневой папке проекта в PYTHONPATH
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import app  # Импортируем экземпляр приложения Flask
 import unittest  # Импортируем модуль для создания тестовых кейсов
 
 
-class TestExample(unittest.TestCase):  # Создаем класс для тестирования
+class TestExample(unittest.TestCase):
+    """
+    Класс для тестирования.
+    """
 
     def setUp(self):
         """
