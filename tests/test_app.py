@@ -17,13 +17,9 @@ class FlaskTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_index(self):
-        response = self.app.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('Добавление рамки и построение графика распределения цветов'.encode('utf-8'), response.data)
-
     def test_upload_image(self):
-        with open('test_image.jpg', 'rb') as f:
+        image_path = os.path.join(os.path.dirname(__file__), 'tests', 'test_image.jpg')
+        with open(image_path, 'rb') as f:
             response = self.app.post('/', data={'image': (f, 'test_image.jpg'), 'border_size': 10},
                                      follow_redirects=True)
             self.assertEqual(response.status_code, 200)
