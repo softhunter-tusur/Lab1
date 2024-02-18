@@ -1,5 +1,5 @@
 import unittest
-from app import app  # Замените "your_app" на имя вашего приложения или модуля
+from app import app  # имя вашего приложения или модуля
 
 class FlaskTest(unittest.TestCase):
 
